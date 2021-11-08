@@ -40,16 +40,6 @@ def getReviewData(hotelId):
 
     return response["reviewData"]["guestReviewGroups"]["guestReviews"]
 
-def isEmpty(list):
-    try:
-        if list[0]["reviews"] == "":
-            return True
-        else:
-            return True
-    except:
-        return False
-
-
 city = input("Insert the name of the city you want to go: ")
 
 cities = getCity(city)
@@ -77,7 +67,7 @@ if len(cities) > 0:
 
     print()
 
-    if isEmpty(reviews):
+    try:
 
         for e in reviews[0]["reviews"]:
             tmp = valorarFrase(e["summary"])
@@ -96,8 +86,8 @@ if len(cities) > 0:
                 result["NONE"] += 1
         
         print(result)
-    else:
-
+        
+    except:
         print("The hotel don't have reviews")
         
 else:
