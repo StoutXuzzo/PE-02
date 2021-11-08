@@ -1,7 +1,6 @@
 import requests, json
 from SentimentAnalisis import valorarFrase
-
-url = "https://hotels4.p.rapidapi.com/locations/v2/search"
+#import matplotlib.pyplot as plt
 
 headers = {
         'x-rapidapi-host': "hotels4.p.rapidapi.com",
@@ -9,6 +8,8 @@ headers = {
         }
 
 def getCity(city):
+
+    url = "https://hotels4.p.rapidapi.com/locations/v2/search"
 
     querystring = {"query":city ,"locale":"en_US","currency":"USD"}
 
@@ -18,6 +19,8 @@ def getCity(city):
     return response["suggestions"][0]["entities"]
 
 def getCloserHotels(cityId):
+
+    url = "https://hotels4.p.rapidapi.com/properties/list"
     
     querystring = {"destinationId":cityId ,"pageNumber":"1","pageSize":"25","checkIn":"2020-01-08","checkOut":"2020-01-15","adults1":"1","sortOrder":"PRICE","locale":"en_US","currency":"USD"}
 
@@ -28,19 +31,31 @@ def getCloserHotels(cityId):
     
 def getReviewData(hotelId):
 
+    url = "https://hotels4.p.rapidapi.com/reviews/list"
+
     querystring = {"id": hotelId,"page":"1","loc":"en_US"}
 
     response = requests.request("GET", url, headers=headers, params=querystring)
     response = dict(json.loads(response.content))
 
-    return response["reviewData"]["guestReviewGroups"]["guestReviews"][0]["reviews"]
+    return response["reviewData"]["guestReviewGroups"]["guestReviews"]
+
+def isEmpty(list):
+    try:
+        if list[0]["reviews"] == "":
+            return True
+        else:
+            return True
+    except:
+        return False
+
 
 city = input("Insert the name of the city you want to go: ")
 
 cities = getCity(city)
 
 if len(cities) > 0:
-    print("Found cities:")
+    print("\nFound cities:")
     for i in range(len(cities)):
         print("    " + str(i + 1) + ".- " + cities[i]["name"])
     num = int(input("\nSelect an option: ")) - 1
@@ -49,7 +64,7 @@ if len(cities) > 0:
     city = cities[num]["name"]
     hotels = getCloserHotels(cityId)
 
-    print("This are the 25 closest hotels to " + city + ":")
+    print("\nThis are the 25 closest hotels to " + city + ":")
     for i in range(len(hotels)):
         print("    " + str(i+1)  + ".- " + hotels[i]["name"] + " in " + hotels[i]["neighbourhood"])
     num = int(input("\nSelect an option: ")) - 1
@@ -60,23 +75,31 @@ if len(cities) > 0:
     reviews = getReviewData(hotelId)
     result = {"P+": 0, "P":0, "NEU":0 ,"N":0 ,"N+":0 ,"NONE":0}
 
-    for e in reviews:
-        tmp = valorarFrase(e["summary"])
+    print()
 
-        if tmp == "P+":
-            result["P+"] += 1
-        elif tmp == "P":
-            result["P"] +=1
-        elif tmp == "NEU":
-            result["NEU"] += 1
-        elif tmp == "N":
-            result["N"] += 1
-        elif tmp == "N+":
-            result["N+"] += 1
-        else:
-            result["NONE"] += 1
+    if isEmpty(reviews):
 
-    print(result)
+        for e in reviews[0]["reviews"]:
+            tmp = valorarFrase(e["summary"])
+
+            if tmp == "P+":
+                result["P+"] += 1
+            elif tmp == "P":
+                result["P"] +=1
+            elif tmp == "NEU":
+                result["NEU"] += 1
+            elif tmp == "N":
+                result["N"] += 1
+            elif tmp == "N+":
+                result["N+"] += 1
+            else:
+                result["NONE"] += 1
+        
+        print(result)
+    else:
+
+        print("The hotel don't have reviews")
+        
 else:
     print("No se han encontrado ciudades con ese nombre.")
 
