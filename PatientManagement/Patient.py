@@ -36,3 +36,4 @@ class Patient():
 
     def addVisit(self, appointment):
         self.__visits.append(appointment)
+        self.__nVisits = len(self.__visits)

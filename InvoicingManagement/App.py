@@ -14,9 +14,9 @@ def showInvoices(invoices):
     plt.ylabel("€")
     plt.show()
 
-        #print(elem.getId(), str(elem.getDate()), elem.getNif(), elem.getPaid(), elem.getBase(), elem.getTotal(), sep="\n")
-        #for pro in elem.getLines():
-            #print("      -" + pro[0], pro[1], pro[2])
+    print(elem.getId(), str(elem.getDate()), elem.getNif(), elem.getPaid(), elem.getBase(), elem.getTotal(), sep="\n")
+    for pro in elem.getLines():
+        print("      -" + pro[0], pro[1], pro[2])
 
 ctrl = Controller()
 
