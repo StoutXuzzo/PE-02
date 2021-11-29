@@ -1,4 +1,4 @@
-import datetime, re, random
+import datetime, re
 
 def valDni():
     code = "TRWAGMYFPDXBNIZSQVHLCKE"
@@ -43,10 +43,6 @@ def valString(value):
     while True:
         string = input("Input " + value + ": ")
         if len(string) > 0:
-            for char in string:
-                if not char.isalpha() or not char == "":
-                    print("Incorrect " + value)
-                    continue
             return string
         else:
             print("Incorrect " + value)

@@ -1,4 +1,3 @@
-
 class Patient():
     def __init__(self, dni, name, surname, born, phone, mail):
         self.__dni = dni

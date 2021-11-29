@@ -1,73 +1,9 @@
-from Patient import *
-from Controller import *
+from PatientV2 import *
+from ControllerV2 import *
+import Validations as val
 import datetime, re
 
-def valDni():
-    code = "TRWAGMYFPDXBNIZSQVHLCKE"
-
-    while True:
-        dni = input("Input DNI: ")
-
-        dniNum = dni[:-1]
-
-        if dni[:-1].isdigit() and len(dni) == 9:
-
-            dniNum = int(dniNum)
-
-            num = dniNum % 23
-            if dni[-1] == code[num]:
-                return dni
-            else:
-                print("Incorrect DNI")
-        else:
-            print("Incorrect DNI")
-                
-
-def valName():
-    while True:
-        name = input("Input Name: ")
-        if len(name) > 0:
-            return name
-        else:
-            print("Incorrect Name.")
-                
-
-def valSurnames():
-    surname = input("Input Surname:")
-    if len(surname) > 0:
-        return surname
-    else:
-        print("Incoreect Surname")
-
-def valDate():
-    while True:
-        date = input("Input birth date (dd/mm/yyyy): ")
-        try:
-            date = date.split("/")
-            date = datetime.date(int(date[2]), int(date[1]), int(date[0]))
-            return date
-        except:
-            print("Incorrect Date")
-
-def valPhone():
-    while True:
-        num = input("Input Phone: ")
-        try:
-            num = int(num)
-            return str(num)
-        except:
-            print("Incorrect Phone")
-
-def valEmail():
-    while True:
-        email = input("Input Email: ")
-        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-        if(re.fullmatch(regex, email)):
-            return email
-        else:
-            print("Incorrect Email")
-
-ctrl = Controller()
+ctrl = ControllerV2()
 
 while True:
     print("\nMatias Polyclinic")
@@ -84,16 +20,16 @@ while True:
 
         print("\nAdding patient")
 
-        dni = valDni()
-        name = valName()
-        surname = valSurnames()
-        born = valDate()
-        phone = valPhone()
-        mail = valEmail()
+        dni = val.valDni()
+        name = val.valString("Name")
+        surname = val.valString("Surname")
+        born = val.valDate()
+        phone = val.valInt("Phone")
+        mail = val.valEmail()
+        height = val.valDouble("Height")
+        weight = val.valDouble("Weight")
 
-        patient = Patient(dni, name, surname,born, phone, mail)
-
-        if ctrl.addPatient(patient):
+        if ctrl.addPatient(dni, name, surname, born, phone, mail, height, weight):
             print("\nPacient added successfully!")
         else:
             print("\nThis pacient alreadi exist.")
@@ -118,6 +54,10 @@ while True:
         print("Name: " + patient.getName())
         print("Surname: " + patient.getSurname())
         print("Birth date: " + str(patient.getBorn()))
+        print("Age: " + str(patient.getAge()))
+        print("Height: " + str(patient.getHeight()))
+        print("Weight: " + str(patient.getWeight()))
+        print("Health: " + patient.getHealth())
         print("Phone: " + patient.getPhone())
         print("email: " + patient.getMail())
         print("Number of visits:" + str(patient.getNumVisits()))
@@ -160,8 +100,6 @@ while True:
         info = str(fecha) + " - " + description
 
         ctrl.addVisit(dni, info)
-
-        #patient.addVisit(str(fecha) + " - " + description)
 
     elif user == "6":
         break
